@@ -1,10 +1,5 @@
-local response = http_request({
-    Url = "https://raw.githubusercontent.com/onlyokok/plutohook/main/src/access",
-    Method = "GET"
-})
+local Repository = "https://raw.githubusercontent.com/onlyokok/plutohook/main/src/"
+local Libraries = Repository.."libraries/"
 
-if response["StatusCode"] == 200 then
-    warn("Successful")
-else
-    warn("Unsuccessful")
-end
+local Library = loadstring(Libraries.."ui.lua")
+
