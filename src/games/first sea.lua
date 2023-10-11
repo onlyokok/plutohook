@@ -1,6 +1,10 @@
-local reponse = http_request({
-    Url = "www.google.com",
+local response = http_request({
+    Url = "https://raw.githubusercontent.com/onlyokok/plutohook/main/src/access",
     Method = "GET"
 })
 
-print(reponse)
+if response["StatusCode"] == 200 then
+    warn("Successful")
+else
+    warn("Unsuccessful")
+end
