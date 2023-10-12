@@ -182,7 +182,7 @@ pcall(function()
         Text = 'Walk Speed',
         Default = 10,
         Min = 1,
-        Max = 20,
+        Max = 25,
         Rounding = 1,
         Compact = false,
     
