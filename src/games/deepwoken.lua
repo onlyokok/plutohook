@@ -206,7 +206,7 @@ pcall(function()
 
     -- Hooks / Connection Removals / Prevents client printing to the console
 
-    local ConnectionSuccess, ConnectionError = pcall(function()
+    pcall(function()
         for i,v in next, getconnections(game:GetService("ScriptContext").Error) do
             v:Disable()
         end
@@ -214,13 +214,10 @@ pcall(function()
             v:Disable()
         end
     end)
-    
-    print(ConnectionSuccess, ConnectionError)
 
     pcall(function()
         local x;
         x = hookmetamethod(game, "__namecall", newcclosure(function(self, ...)
-            local method = getnamecallmethod()
             local args = {...}
             if type(args[1]) == "number" and type(args[2]) == "boolean" then
                 if getgenv().ScriptOptions.NoFallDamage then
