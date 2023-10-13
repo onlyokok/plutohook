@@ -31,7 +31,7 @@ end
 local visualizer = Instance.new("MeshPart", workspace)
 visualizer.MeshId = "rbxassetid://471124075"
 visualizer.Material = Enum.Material.ForceField
-visualizer.Color = Color3.new(1, 0, 1)
+visualizer.Color = Color3.new(0, 0, 1)
 visualizer.Size = Vector3.new(.05, .05, .05)
 visualizer.CanCollide = false
 visualizer.CastShadow = false
@@ -41,6 +41,7 @@ task.spawn(function()
 		pcall(function()
 			visualizer.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
 			visualizer.Size = Vector3.new(getTimeBeforeImpact() / 25, getTimeBeforeImpact() / 25, getTimeBeforeImpact() / 25)
+			visualizer.Rotation += Vector3.new(0, 5, 0)
 
 			if (getTimeBeforeImpact() < 0.23) and (isTarget()) then
 				keypress(Enum.KeyCode.F)
@@ -50,11 +51,11 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	while task.wait() do
+	game:GetService("RunService").RenderStepped:Connect(function()
 		for _,v in next, game.Players:GetPlayers() do
 			pcall(function()
 				local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).Magnitude
-				if (distance < 15 and getDistance() < 15) and isTarget() and (getTimeBeforeImpact() < 0.23) then
+				if (distance < 5 and getDistance() < 5) and isTarget() and (getTimeBeforeImpact() < 0.23) then
 					local args = {
 						[1] = 0/0,
 						[2] = CFrame.new(0/0, 0/0, 0/0),
@@ -69,7 +70,7 @@ task.spawn(function()
 				end
 			end)
 		end
-	end
+	end)
 end)
 
 x = hookmetamethod(game, "__namecall", function(self, ...)
