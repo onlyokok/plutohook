@@ -41,10 +41,34 @@ task.spawn(function()
 		pcall(function()
 			visualizer.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
 			visualizer.Size = Vector3.new(getTimeBeforeImpact() / 25, getTimeBeforeImpact() / 25, getTimeBeforeImpact() / 25)
+
 			if (getTimeBeforeImpact() < 0.23) and (isTarget()) then
 				keypress(Enum.KeyCode.F)
 			end
 		end)
+	end
+end)
+
+task.spawn(function()
+	while task.wait() do
+		for _,v in next, game.Players:GetPlayers() do
+			pcall(function()
+				local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).Magnitude
+				if (distance < 15 and getDistance() < 15) and isTarget() and (getTimeBeforeImpact() < 0.23) then
+					local args = {
+						[1] = 0/0,
+						[2] = CFrame.new(0/0, 0/0, 0/0),
+						[3] = {},
+						[4] = {
+							[1] = 0/0,
+							[2] = 0/0
+						}
+					}
+					
+					game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ParryAttempt"):FireServer(unpack(args))
+				end
+			end)
+		end
 	end
 end)
 
