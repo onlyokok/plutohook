@@ -31,7 +31,7 @@ end
 local visualizer = Instance.new("MeshPart", workspace)
 visualizer.MeshId = "rbxassetid://471124075"
 visualizer.Material = Enum.Material.ForceField
-visualizer.Color = Color3.new(0, 0, 1)
+visualizer.Color = Color3.new(1, 1, 1)
 visualizer.Size = Vector3.new(.05, .05, .05)
 visualizer.CanCollide = false
 visualizer.CastShadow = false
@@ -41,9 +41,9 @@ task.spawn(function()
 		pcall(function()
 			visualizer.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
 			visualizer.Size = Vector3.new(getTimeBeforeImpact() / 25, getTimeBeforeImpact() / 25, getTimeBeforeImpact() / 25)
-			visualizer.Rotation += Vector3.new(0, 5, 0)
+			visualizer.Rotation += Vector3.new(90, 0, 0)
 
-			if (getTimeBeforeImpact() < 0.23) and (isTarget()) then
+			if (getTimeBeforeImpact() < 0.22) and (isTarget())  then
 				keypress(Enum.KeyCode.F)
 			end
 		end)

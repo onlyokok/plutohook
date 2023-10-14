@@ -1,20 +1,105 @@
+if getgenv().Loaded then return end
+getgenv().Loaded = true
+
 local Repository = "https://raw.githubusercontent.com/onlyokok/plutohook/main/src/"
 local Library = loadstring(game:HttpGet(Repository.."linorias/source.lua"))()
 local ThemeManager = loadstring(game:HttpGet(Repository.."linorias/thememanager.lua"))()
 local SaveManager = loadstring(game:HttpGet(Repository.."linorias/savemanager.lua"))()
 
 local Window = Library:CreateWindow({
-    Title = 'Plutohook',
+    Title = 'Project Pluto',
     Center = true,
     AutoShow = true,
     TabPadding = 8,
     MenuFadeTime = 0.2
 })
 
+getgenv().ScriptOptions = {
+    RifleFarm = false,
+    SelectedEnemy = "a",
+    SelectedHitbox = "Head",
+    SelectedMethod = "Selected"
+}
+
 local Tabs = {
     Main = Window:AddTab('Grand Piece Online'),
     ['UI Settings'] = Window:AddTab('Settings')
 }
+
+local AutoFarmGroupBox = Tabs.Main:AddLeftGroupbox('Auto Farm')
+
+local NPCs = workspace.NPCs
+
+-- functions
+local GetEnemies = function()
+	local enemies = {}
+
+	for _,enemy in next, NPCs:GetChildren() do
+		if enemy:FindFirstChild("HumanoidRootPart") and enemy:FindFirstChild("Humanoid").Health > 0 and not enemy:FindFirstChild("ForceField") and not table.find(enemies, enemy.Name) then
+			table.insert(enemies, enemy.Name)
+		end
+	end
+
+	return enemies
+end
+
+AutoFarmGroupBox:AddToggle('MyToggle', {
+    Text = 'Rifle Farm',
+    Default = false,
+    Tooltip = 'Rifle Farm',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.Rifle = Value
+    end
+})
+
+AutoFarmGroupBox:AddDropdown('MyDropdown', {
+    Values = {"Selected", "Closest"},
+    Default = 1,
+    Multi = false,
+
+    Text = 'Select Method',
+    Tooltip = 'Select Method',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.SelectedMethod = Value
+    end
+})
+
+local SelectEnemyDropdown = AutoFarmGroupBox:AddDropdown('MyDropdown', {
+    Values = GetEnemies(),
+    Default = 1,
+    Multi = false,
+
+    Text = 'Select Enemy',
+    Tooltip = 'Select Enemy',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.SelectedEnemy = Value
+    end
+})
+
+AutoFarmGroupBox:AddButton({
+    Text = 'Refresh Enemies',
+    Func = function()
+        SelectEnemyDropdown:SetValue(GetEnemies())
+    end,
+    DoubleClick = false,
+    Tooltip = 'Refresh Enemies'
+})
+
+AutoFarmGroupBox:AddDropdown('MyDropdown', {
+    Values = {"Head", "HumanoidRootPart"},
+    Default = 1,
+    Multi = false,
+
+    Text = 'Select Hitbox',
+    Tooltip = 'Select Hitbox',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.SelectedHitbox = Value
+    end
+})
 
 -- Library functions
 -- Sets the watermark visibility
@@ -34,7 +119,7 @@ local WatermarkConnection = game:GetService('RunService').RenderStepped:Connect(
         FrameCounter = 0;
     end;
 
-    Library:SetWatermark(('Plutohook | %s fps | %s ms'):format(
+    Library:SetWatermark(('Project Pluto | %s fps | %s ms'):format(
         math.floor(FPS),
         math.floor(game:GetService('Stats').Network.ServerStatsItem['Data Ping']:GetValue())
     ));
@@ -45,7 +130,15 @@ Library.KeybindFrame.Visible = true; -- todo: add a function for this
 Library:OnUnload(function()
     WatermarkConnection:Disconnect()
 
+    -- making all of our booleans equal to false
+    for _,value in next, getgenv().ScriptOptions do
+        if type(value) == "boolean" then
+            value = false
+        end
+    end
+
     print('Unloaded!')
+    getgenv().Loaded = false
     Library.Unloaded = true
 end)
 
@@ -77,8 +170,8 @@ SaveManager:SetIgnoreIndexes({ 'MenuKeybind' })
 -- use case for doing it this way:
 -- a script hub could have themes in a global folder
 -- and game configs in a separate folder per game
-ThemeManager:SetFolder('Plutohook')
-SaveManager:SetFolder('Plutohook/GrandPieceOnline')
+ThemeManager:SetFolder('Project Pluto')
+SaveManager:SetFolder('Project Pluto/GrandPieceOnline')
 
 -- Builds our config menu on the right side of our tab
 SaveManager:BuildConfigSection(Tabs['UI Settings'])

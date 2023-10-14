@@ -22,7 +22,7 @@ pcall(function()
         Speed = 1,
         InfiniteJump = false,
         Velocity = 150,
-        NoFallDamage = false
+        NoFallDamage = true
     }
 
     local Tabs = {
@@ -65,7 +65,7 @@ pcall(function()
             end
         end
     }):AddKeyPicker('KeyPicker', {
-        Default = '',
+        Default = 'Z',
         SyncToggleState = true,
     
     
@@ -98,7 +98,7 @@ pcall(function()
             end
         end
     }):AddKeyPicker('KeyPicker', {
-        Default = '',
+        Default = 'T',
         SyncToggleState = true,
     
     
@@ -136,7 +136,7 @@ pcall(function()
             end)
         end
     }):AddKeyPicker('KeyPicker', {
-        Default = '',
+        Default = 'Y',
         SyncToggleState = true,
     
     
@@ -157,7 +157,7 @@ pcall(function()
 
     LocalPlayerGroupBox:AddToggle('MyToggle', {
         Text = 'No Fall Damage',
-        Default = false,
+        Default = true,
         Tooltip = 'No Fall Damage',
     
         Callback = function(Value)
@@ -204,16 +204,29 @@ pcall(function()
         end
     })
 
-    -- Hooks / Connection Removals / Prevents client printing to the console
+    LocalPlayerGroupBox:AddLabel('Instant Log'):AddKeyPicker('KeyPicker', {
+        Default = 'Insert',
+        SyncToggleState = true,
+    
+    
 
-    pcall(function()
-        for i,v in next, getconnections(game:GetService("ScriptContext").Error) do
-            v:Disable()
+        Mode = 'Toggle',
+    
+        Text = 'Instant Log',
+        NoUI = false,
+    
+        Callback = function(Value)
+            pcall(function()
+                game:GetService("ReplicatedStorage"):WaitForChild("Requests"):WaitForChild("ReturnToMenu"):FireServer()
+                task.wait(.65)
+                firesignal(game:GetService("Players").LocalPlayer.PlayerGui.ChoicePrompt.ChoiceFrame.DescSheet.Yes.MouseButton1Click)
+            end)
+        end,
+    
+        ChangedCallback = function(New)
+            
         end
-        for i,v in next, getconnections(game:GetService("LogService").MessageOut) do
-            v:Disable()
-        end
-    end)
+    })
 
     pcall(function()
         local x;
@@ -312,4 +325,13 @@ pcall(function()
     -- which has been marked to be one that auto loads!
     SaveManager:LoadAutoloadConfig()
 
+end)
+
+pcall(function()
+    for i,v in next, getconnections(game:GetService("ScriptContext").Error) do
+        v:Disable()
+    end
+    for i,v in next, getconnections(game:GetService("LogService").MessageOut) do
+        v:Disable()
+    end
 end)
