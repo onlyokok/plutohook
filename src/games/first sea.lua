@@ -367,7 +367,7 @@ local WatermarkConnection = game:GetService('RunService').RenderStepped:Connect(
     ));
 end);
 
-Library.KeybindFrame.Visible = true; -- todo: add a function for this
+Library.KeybindFrame.Visible = true;
 
 Library:OnUnload(function()
     WatermarkConnection:Disconnect()
