@@ -20,8 +20,15 @@ getgenv().ScriptOptions = {
     SelectedEnemy = "Bandit",
     SelectedHitbox = "Head",
     SelectedMethod = "Selected",
+    Strength = false,
+    Stamina = false,
+    Defense = false,
+    GunMastery = false,
+    SwordMastery = false,
     Tween =  nil,
     TweenOngoing = false,
+    SafeMode = false,
+    AnticheatBypass = false,
     TweenSpeed = 50,
     AutoQuest = false,
     SelectedQuest = nil,
@@ -92,7 +99,6 @@ AutoFarmGroupBox:AddToggle('MyToggle', {
 
 local NPCs = game.Workspace.NPCs
 
--- functions
 local GetEnemies = function()
 	local enemies = {}
 
@@ -248,7 +254,117 @@ AutoFarmGroupBox:AddDropdown('MyDropdown', {
     end
 })
 
+local AutoSkillpointsGroupBox = Tabs.Main:AddLeftGroupbox('Auto-add Skillpoints')
+
+AutoSkillpointsGroupBox:AddToggle('MyToggle', {
+    Text = 'Strength',
+    Default = false,
+    Tooltip = 'Strength',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.Strength = Value
+
+        while getgenv().ScriptOptions.Strength do task.wait()
+            firesignal(game.Players.LocalPlayer.PlayerGui.Main.Stats.Frame.Strength.TextButton.MouseButton1Click)
+        end
+    end
+})
+
+AutoSkillpointsGroupBox:AddToggle('MyToggle', {
+    Text = 'Stamina',
+    Default = false,
+    Tooltip = 'Stamina',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.Stamina = Value
+
+        while getgenv().ScriptOptions.Stamina do task.wait()
+            firesignal(game.Players.LocalPlayer.PlayerGui.Main.Stats.Frame.Stamina.TextButton.MouseButton1Click)
+        end
+    end
+})
+
+AutoSkillpointsGroupBox:AddToggle('MyToggle', {
+    Text = 'Defense',
+    Default = false,
+    Tooltip = 'Defense',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.Defense = Value
+
+        while getgenv().ScriptOptions.Defense do task.wait()
+            firesignal(game.Players.LocalPlayer.PlayerGui.Main.Stats.Frame.Defense.TextButton.MouseButton1Click)
+        end
+    end
+})
+
+AutoSkillpointsGroupBox:AddToggle('MyToggle', {
+    Text = 'Gun Mastery',
+    Default = false,
+    Tooltip = 'Gun Mastery',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.GunMastery = Value
+
+        while getgenv().ScriptOptions.GunMastery do task.wait()
+            firesignal(game.Players.LocalPlayer.PlayerGui.Main.Stats.Frame.GunMastery.TextButton.MouseButton1Click)
+        end
+    end
+})
+
+AutoSkillpointsGroupBox:AddToggle('MyToggle', {
+    Text = 'Sword Mastery',
+    Default = false,
+    Tooltip = 'Sword Mastery',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.SwordMastery = Value
+
+        while getgenv().ScriptOptions.SwordMastery do task.wait()
+            firesignal(game.Players.LocalPlayer.PlayerGui.Main.Stats.Frame.SwordMastery.TextButton.MouseButton1Click)
+        end
+    end
+})
+
 local ScriptSettingsGroupBox = Tabs.Main:AddRightGroupbox('Script Settings')
+
+ScriptSettingsGroupBox:AddToggle('MyToggle', {
+    Text = 'Safe Mode',
+    Default = false,
+    Tooltip = 'Safe Mode',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.SafeMode = Value
+        if getgenv().ScriptOptions.SafeMode then
+            getconnections(game:GetService("ScriptContext").Error)[1]:Disable()
+        else
+            getconnections(game:GetService("ScriptContext").Error)[1]:Enable()
+        end
+    end
+})
+
+ScriptSettingsGroupBox:AddToggle('MyToggle', {
+    Text = 'Anti-cheat Bypass',
+    Default = false,
+    Tooltip = 'Anti-cheat Bypass',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.AnticheatBypass = Value
+        
+        while getgenv().ScriptOptions.AnticheatBypass do
+            local args = {
+                [1] = "Sky Walk2",
+                [2] = {
+                    ["char"] = game.Players.LocalPlayer.Character,
+                    ["cf"] = CFrame.new(0, 0, 0)
+                }
+            }
+            
+            game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Skill"):InvokeServer(unpack(args))            
+            task.wait(1)
+        end
+    end
+})
 
 ScriptSettingsGroupBox:AddSlider('MySlider', {
     Text = 'Tween Speed',
@@ -343,11 +459,8 @@ AutoQuestGroupBox:AddButton({
     Tooltip = 'Refresh Quests'
 })
 
--- Library functions
--- Sets the watermark visibility
-Library:SetWatermarkVisibility(true)
+Library:SetWatermarkVisibility(false)
 
--- Example of dynamically-updating watermark with common traits (fps and ping)
 local FrameTimer = tick()
 local FrameCounter = 0;
 local FPS = 60;
@@ -372,11 +485,14 @@ Library.KeybindFrame.Visible = true;
 Library:OnUnload(function()
     WatermarkConnection:Disconnect()
 
-    -- making all of our booleans equal to false
     for _,value in next, getgenv().ScriptOptions do
         if type(value) == "boolean" then
             value = false
         end
+    end
+
+    if getgenv().ScriptOptions.TweenOngoing then
+        getgenv().ScriptOptions.Tween:Cancel()
     end
 
     print('Unloaded!')
@@ -387,41 +503,26 @@ end)
 -- UI Settings
 local MenuGroup = Tabs['UI Settings']:AddLeftGroupbox('Menu')
 
--- I set NoUI so it does not show up in the keybinds menu
 MenuGroup:AddButton('Unload', function() Library:Unload() end)
+
 MenuGroup:AddLabel('Menu bind'):AddKeyPicker('MenuKeybind', { Default = 'LeftBracket', NoUI = true, Text = 'Menu keybind' })
 
-Library.ToggleKeybind = Options.MenuKeybind -- Allows you to have a custom keybind for the menu
+Library.ToggleKeybind = Options.MenuKeybind
 
--- Addons:
--- SaveManager (Allows you to have a configuration system)
--- ThemeManager (Allows you to have a menu theme system)
-
--- Hand the library over to our managers
 ThemeManager:SetLibrary(Library)
+
 SaveManager:SetLibrary(Library)
 
--- Ignore keys that are used by ThemeManager.
--- (we dont want configs to save themes, do we?)
 SaveManager:IgnoreThemeSettings()
 
--- Adds our MenuKeybind to the ignore list
--- (do you want each config to have a different menu key? probably not.)
 SaveManager:SetIgnoreIndexes({ 'MenuKeybind' })
 
--- use case for doing it this way:
--- a script hub could have themes in a global folder
--- and game configs in a separate folder per game
 ThemeManager:SetFolder('Project Pluto')
+
 SaveManager:SetFolder('Project Pluto/GrandPieceOnline')
 
--- Builds our config menu on the right side of our tab
 SaveManager:BuildConfigSection(Tabs['UI Settings'])
 
--- Builds our theme menu (with plenty of built in themes) on the left side
--- NOTE: you can also call ThemeManager:ApplyToGroupbox to add it to a specific groupbox
 ThemeManager:ApplyToTab(Tabs['UI Settings'])
 
--- You can use the SaveManager:LoadAutoloadConfig() to load a config
--- which has been marked to be one that auto loads!
 SaveManager:LoadAutoloadConfig()
