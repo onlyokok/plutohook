@@ -28,24 +28,23 @@ local getTimeBeforeImpact = function()
     return getDistance() / getSpeed()
 end
 
-local visualizer = Instance.new("MeshPart", workspace)
-visualizer.MeshId = "rbxassetid://471124075"
+local visualizer = Instance.new("Part", workspace)
 visualizer.Material = Enum.Material.ForceField
-visualizer.Color = Color3.new(1, 1, 1)
+visualizer.Color = Color3.new(1, 0, 1)
 visualizer.Size = Vector3.new(.05, .05, .05)
 visualizer.CanCollide = false
 visualizer.CastShadow = false
+visualizer.Shape = "Ball"
 
 task.spawn(function()
 	while task.wait() do
 		pcall(function()
 			visualizer.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
-			visualizer.Size = Vector3.new(getTimeBeforeImpact() / 25, getTimeBeforeImpact() / 25, getTimeBeforeImpact() / 25)
-			visualizer.Rotation += Vector3.new(90, 0, 0)
+			visualizer.Size = Vector3.new(getTimeBeforeImpact() * 7, getTimeBeforeImpact() * 7, getTimeBeforeImpact() * 7)
 
-			if (getTimeBeforeImpact() < 0.22) and (isTarget())  then
+			if (getTimeBeforeImpact() <= 0.25) and (isTarget())  then
 				keypress(Enum.KeyCode.F)
-			end
+			end	
 		end)
 	end
 end)
