@@ -7,7 +7,7 @@ local ThemeManager = loadstring(game:HttpGet(Repository.."linorias/thememanager.
 local SaveManager = loadstring(game:HttpGet(Repository.."linorias/savemanager.lua"))()
 
 local Window = Library:CreateWindow({
-    Title = 'Project Pluto',
+    Title = 'SoulHub',
     Center = true,
     AutoShow = true,
     TabPadding = 8,
