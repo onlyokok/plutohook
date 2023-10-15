@@ -32,7 +32,11 @@ getgenv().ScriptOptions = {
     TweenSpeed = 50,
     AutoQuest = false,
     SelectedQuest = nil,
-    Position = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+    Position = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame,
+    WalkSpeed = false,
+    WalkSpeedAmount = 150,
+    JumpPower = false,
+    JumpPowerAmount = 70
 }
 
 local Tabs = {
@@ -457,6 +461,66 @@ AutoQuestGroupBox:AddButton({
     end,
     DoubleClick = false,
     Tooltip = 'Refresh Quests'
+})
+
+local LocalPlayerGroupBox = Tabs.Main:AddRightGroupbox('Local Player')
+
+LocalPlayerGroupBox:AddToggle('MyToggle', {
+    Text = 'Walk Speed',
+    Default = false,
+    Tooltip = 'Walk Speed',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.WalkSpeed = Value
+        while getgenv().ScriptOptions.WalkSpeed do task.wait()
+            pcall(function()
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame += game.Players.LocalPlayer.Character.Humanoid.MoveDirection * (getgenv().ScriptOptions.WalkSpeedAmount / 1000)
+            end)
+        end
+    end
+})
+
+LocalPlayerGroupBox:AddSlider('MySlider', {
+    Text = 'Walk Speed',
+    Default = 50,
+    Min = 50,
+    Max = 250,
+    Rounding = 0,
+    Compact = false,
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.WalkSpeedAmount = Value
+    end
+})
+
+LocalPlayerGroupBox:AddToggle('MyToggle', {
+    Text = 'Jump Power',
+    Default = false,
+    Tooltip = 'Jump Power',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.JumpPower = Value
+
+        game:GetService("UserInputService").InputBegan:Connect(function(Input, Processed)
+            if Processed then return end
+            if Input.KeyCode == Enum.KeyCode.Space and getgenv().ScriptOptions.JumpPower then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0, getgenv().ScriptOptions.JumpPowerAmount, 0)
+            end
+        end)
+    end
+})
+
+LocalPlayerGroupBox:AddSlider('MySlider', {
+    Text = 'Jump Power',
+    Default = 70,
+    Min = 50,
+    Max = 150,
+    Rounding = 0,
+    Compact = false,
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.JumpPowerAmount = Value
+    end
 })
 
 Library:SetWatermarkVisibility(false)
