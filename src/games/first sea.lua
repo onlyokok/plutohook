@@ -19,7 +19,11 @@ getgenv().ScriptOptions = {
     RifleFarm = false,
     SelectedEnemy = "Bandit",
     SelectedHitbox = "Head",
-    SelectedMethod = "Selected",
+    SelectedMethod = "Closest",
+    PlayerFarm = false,
+    PlayerFarmRange = 30,
+    PlayerFarmOffset = 5,
+    PlayerFarmMethod = "Above",
     Strength = false,
     Stamina = false,
     Defense = false,
@@ -224,7 +228,7 @@ AutoFarmGroupBox:AddToggle('MyToggle', {
 
 AutoFarmGroupBox:AddDropdown('MyDropdown', {
     Values = {"Selected", "Closest"},
-    Default = 1,
+    Default = 2,
     Multi = false,
 
     Text = 'Select Method',
@@ -277,6 +281,87 @@ AutoFarmGroupBox:AddButton({
     end,
     DoubleClick = false,
     Tooltip = 'Teleport to Fishman Island'
+})
+
+local PlayerFarmGroupBox = Tabs.Main:AddLeftGroupbox('Player Farm')
+
+local GetClosestToCharacter = function(MaxDistance)
+    local ClosestPlayer = nil
+    local ClosestDistance = math.huge
+
+    for _,player in next, game.Players:GetPlayers() do
+		pcall(function()
+            if player ~= game.Players.LocalPlayer and player.Character and player.Character:FindFirstChild("Head") and player.Character:FindFirstChild("HumanoidRootPart") and player.Character:FindFirstChild("Humanoid").Health > 0 then
+                local Distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
+    
+                if Distance < ClosestDistance and Distance <= MaxDistance then
+                    ClosestPlayer = player
+                    ClosestDistance = Distance
+                end
+            end
+        end)
+	end
+
+    return ClosestPlayer
+end
+
+PlayerFarmGroupBox:AddToggle('MyToggle', {
+    Text = 'Player Farm',
+    Default = false,
+    Tooltip = 'Player Farm',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.PlayerFarm = Value
+
+        while getgenv().ScriptOptions.PlayerFarm do task.wait()
+            pcall(function()
+                if getgenv().ScriptOptions.PlayerFarmMethod == "Above" then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = GetClosestToCharacter(getgenv().ScriptOptions.PlayerFarmRange).Character.HumanoidRootPart.CFrame + Vector3.new(0, getgenv().ScriptOptions.PlayerFarmOffset, 0)
+                elseif getgenv().ScriptOptions.PlayerFarmMethod == "Below" then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = GetClosestToCharacter(getgenv().ScriptOptions.PlayerFarmRange).Character.HumanoidRootPart.CFrame - Vector3.new(0, getgenv().ScriptOptions.PlayerFarmOffset, 0)
+                end
+            end)
+        end
+    end
+})
+
+PlayerFarmGroupBox:AddSlider('MySlider', {
+    Text = 'Range',
+    Default = 10,
+    Min = 10,
+    Max = 30,
+    Rounding = 0,
+    Compact = false,
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.PlayerFarmRange = Value
+    end
+})
+
+PlayerFarmGroupBox:AddSlider('MySlider', {
+    Text = 'Offset',
+    Default = 0,
+    Min = 0,
+    Max = 10,
+    Rounding = 0,
+    Compact = false,
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.PlayerFarmOffset = Value
+    end
+})
+
+PlayerFarmGroupBox:AddDropdown('MyDropdown', {
+    Values = {"Above", "Below"},
+    Default = 1,
+    Multi = false,
+
+    Text = 'Select Method',
+    Tooltip = 'Select Method',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.PlayerFarmMethod = Value
+    end
 })
 
 local AutoSkillpointsGroupBox = Tabs.Main:AddLeftGroupbox('Auto-add Skillpoints')
@@ -766,26 +851,6 @@ local GetClosestPlayerToCursor = function()
 	end
 
 	return ClosestPlayer
-end
-
-local GetClosestToCharacter = function()
-    local ClosestPlayer = nil
-    local ClosestDistance = math.huge
-
-    for _,player in next, game.Players:GetPlayers() do
-		pcall(function()
-            if player ~= game.Players.LocalPlayer and player.Character and player.Character:FindFirstChild("Head") and player.Character:FindFirstChild("HumanoidRootPart") and player.Character:FindFirstChild("Humanoid").Health > 0 then
-                local Distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
-    
-                if Distance < ClosestDistance then
-                    ClosestPlayer = player
-                    ClosestDistance = Distance
-                end
-            end
-        end)
-	end
-
-    return ClosestPlayer
 end
 
 Library:OnUnload(function()
