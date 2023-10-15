@@ -747,31 +747,7 @@ LocalPlayerGroupBox:AddToggle('MyToggle', {
     end
 })
 
-Library:SetWatermarkVisibility(false)
-
-local FrameTimer = tick()
-local FrameCounter = 0;
-local FPS = 60;
-
-local WatermarkConnection = game:GetService('RunService').RenderStepped:Connect(function()
-    FrameCounter += 1;
-
-    if (tick() - FrameTimer) >= 1 then
-        FPS = FrameCounter;
-        FrameTimer = tick();
-        FrameCounter = 0;
-    end;
-
-    Library:SetWatermark(('Project Pluto | %s fps | %s ms'):format(
-        math.floor(FPS),
-        math.floor(game:GetService('Stats').Network.ServerStatsItem['Data Ping']:GetValue())
-    ));
-end);
-
-Library.KeybindFrame.Visible = true;
-
 Library:OnUnload(function()
-    WatermarkConnection:Disconnect()
 
     for _,value in next, getgenv().ScriptOptions do
         if type(value) == "boolean" then
@@ -795,6 +771,16 @@ local MenuGroup = Tabs['UI Settings']:AddLeftGroupbox('Menu')
 MenuGroup:AddButton('Unload', function() Library:Unload() end)
 
 MenuGroup:AddLabel('Menu bind'):AddKeyPicker('MenuKeybind', { Default = 'LeftBracket', NoUI = true, Text = 'Menu keybind' })
+
+MenuGroup:AddToggle('MyToggle', {
+    Text = 'Show Keybinds',
+    Default = false,
+    Tooltip = 'Show Keybinds',
+
+    Callback = function(Value)
+        Library.KeybindFrame.Visible = Value
+    end
+})
 
 Library.ToggleKeybind = Options.MenuKeybind
 
