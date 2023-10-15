@@ -20,6 +20,8 @@ getgenv().ScriptOptions = {
     SelectedEnemy = "Bandit",
     SelectedHitbox = "Head",
     SelectedMethod = "Selected",
+    SilentAim = false,
+    SilentAimMethod = "Cursor",
     Strength = false,
     Stamina = false,
     Defense = false,
@@ -277,6 +279,31 @@ AutoFarmGroupBox:AddButton({
     end,
     DoubleClick = false,
     Tooltip = 'Teleport to Fishman Island'
+})
+
+local SilentAimGroupBox = Tabs.Main:AddLeftGroupbox('Silent Aim')
+
+SilentAimGroupBox:AddToggle('MyToggle', {
+    Text = 'Silent Aim',
+    Default = false,
+    Tooltip = 'Silent Aim',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.SilentAim = Value
+    end
+})
+
+SilentAimGroupBox:AddDropdown('MyDropdown', {
+    Values = {"Cursor", "Distance"},
+    Default = 1,
+    Multi = false,
+
+    Text = 'Select Method',
+    Tooltip = 'Select Method',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.SilentAimMethod = Value
+    end
 })
 
 local AutoSkillpointsGroupBox = Tabs.Main:AddLeftGroupbox('Auto-add Skillpoints')
@@ -746,6 +773,69 @@ LocalPlayerGroupBox:AddToggle('MyToggle', {
         end
     end
 })
+
+local GetClosestPlayerToCursor = function()
+	local ClosestPlayer = nil
+	local ClosestDistance = math.huge
+
+	for _,player in next, game.Players:GetPlayers() do
+		pcall(function()
+            if player ~= game.Players.LocalPlayer and player.Character and player.Character:FindFirstChild("Head") and player.Character:FindFirstChild("HumanoidRootPart") and player.Character:FindFirstChild("Humanoid").Health > 0 then
+                local Vector = workspace.CurrentCamera:WorldToScreenPoint(player.Character.Head.Position)
+                local Distance = Vector2.new(game:GetService("UserInputService"):GetMouseLocation().X - Vector.X, game:GetService("UserInputService"):GetMouseLocation().Y - Vector.Y).Magnitude
+    
+                if Distance < ClosestDistance and Distance then
+                    ClosestPlayer = player
+                    ClosestDistance = Distance
+                end
+            end
+        end)
+	end
+
+	return ClosestPlayer
+end
+
+local GetClosestToCharacter = function()
+    local ClosestPlayer = nil
+    local ClosestDistance = math.huge
+
+    for _,player in next, game.Players:GetPlayers() do
+		pcall(function()
+            if player ~= game.Players.LocalPlayer and player.Character and player.Character:FindFirstChild("Head") and player.Character:FindFirstChild("HumanoidRootPart") and player.Character:FindFirstChild("Humanoid").Health > 0 then
+                local Distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
+    
+                if Distance < ClosestDistance then
+                    ClosestPlayer = player
+                    ClosestDistance = Distance
+                end
+            end
+        end)
+	end
+
+    return ClosestPlayer
+end
+
+local oldNamecall;
+
+oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
+	local args = {...}
+	
+	if tostring(self) == "CIcklcon" then
+		if getgenv().ScriptOptions.SilentAim then
+            args[2]["Start"] = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+
+            if getgenv().ScriptOptions.SilentAimMethod == "Cursor" then
+                args[2]["Position"] = GetClosestPlayerToCursor().Character.Head.Position
+            elseif getgenv().ScriptOptions.SilentAimMethod == "Distance" then
+                args[2]["Position"] = GetClosestToCharacter().Character.Head.Position
+            end
+
+            return self.FireServer(self, unpack(args))
+        end
+	end
+
+	return oldNamecall(self, ...)
+end)
 
 Library:OnUnload(function()
 
