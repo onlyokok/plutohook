@@ -25,6 +25,9 @@ getgenv().ScriptOptions = {
     Defense = false,
     GunMastery = false,
     SwordMastery = false,
+    Start = false,
+    SelectedIsland = nil,
+    SelectedIslandMethod = "Air",
     Tween =  nil,
     TweenOngoing = false,
     SafeMode = false,
@@ -98,8 +101,10 @@ AutoFarmGroupBox:AddToggle('MyToggle', {
         getgenv().ScriptOptions.ChestFarm = Value
         if getgenv().ScriptOptions.ChestFarm then
             while getgenv().ScriptOptions.ChestFarm do task.wait()
-                TweenTo(GetClosestChest().CFrame, getgenv().ScriptOptions.TweenSpeed, Vector3.new(0, 5, 0))
-                fireclickdetector(GetClosestChest().ClickDetector)
+                pcall(function()
+                    TweenTo(GetClosestChest().CFrame, getgenv().ScriptOptions.TweenSpeed, Vector3.new(0, 5, 0))
+                    fireclickdetector(GetClosestChest().ClickDetector)
+                end)
             end
         else
             task.wait()
@@ -265,6 +270,15 @@ AutoFarmGroupBox:AddDropdown('MyDropdown', {
     end
 })
 
+AutoFarmGroupBox:AddButton({
+    Text = 'Teleport to Fishman Island',
+    Func = function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(5639.86865, -92.762001, -16611.4688)
+    end,
+    DoubleClick = false,
+    Tooltip = 'Teleport to Fishman Island'
+})
+
 local AutoSkillpointsGroupBox = Tabs.Main:AddLeftGroupbox('Auto-add Skillpoints')
 
 AutoSkillpointsGroupBox:AddToggle('MyToggle', {
@@ -334,6 +348,83 @@ AutoSkillpointsGroupBox:AddToggle('MyToggle', {
         while getgenv().ScriptOptions.SwordMastery do task.wait()
             firesignal(game.Players.LocalPlayer.PlayerGui.Main.Stats.Frame.SwordMastery.TextButton.MouseButton1Click)
         end
+    end
+})
+
+local TeleportsGroupBox = Tabs.Main:AddLeftGroupbox('Teleports')
+
+local GetIslands = function()
+    local islands = {}
+
+    for _,island in next, workspace.Islands:GetChildren() do
+        if not table.find(islands, island.Name) then
+            table.insert(islands, island.Name)
+        end
+    end
+
+    return islands
+end
+
+TeleportsGroupBox:AddToggle('MyToggle', {
+    Text = 'Start',
+    Default = false,
+    Tooltip = 'Start',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.Start = Value
+        if getgenv().ScriptOptions.Start then
+            pcall(function()
+                if getgenv().ScriptOptions.SelectedIslandMethod == "Air" then
+                    local Position = CFrame.new(workspace.Islands[getgenv().ScriptOptions.SelectedIsland]:GetAttribute("islandPosition"))
+                    local NewPosition = CFrame.new(Position.X, 15, Position.Z)
+                    
+                    if game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.Position.Y ~= 15 then
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(game.Players.LocalPlayer.Character.HumanoidRootPart.Position.X, 15, game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Z)
+                    end
+
+                    TweenTo(NewPosition, getgenv().ScriptOptions.TweenSpeed, Vector3.new(0, 0, 0))
+                elseif getgenv().ScriptOptions.SelectedIslandMethod == "Swim" then
+                    local Position = CFrame.new(workspace.Islands[getgenv().ScriptOptions.SelectedIsland]:GetAttribute("islandPosition"))
+                    local NewPosition = CFrame.new(Position.X, -2.7, Position.Z)
+                    
+                    if game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.Position.Y ~= -2.7 then
+                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(game.Players.LocalPlayer.Character.HumanoidRootPart.Position.X, -2.7, game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Z)
+                    end
+
+                    TweenTo(NewPosition, getgenv().ScriptOptions.TweenSpeed, Vector3.new(0, 0, 0))
+                end
+            end)
+        else
+            if getgenv().ScriptOptions.TweenOngoing then
+                getgenv().ScriptOptions.Tween:Cancel()
+            end
+        end
+    end
+})
+
+TeleportsGroupBox:AddDropdown('MyDropdown', {
+    Values = GetIslands(),
+    Default = 1,
+    Multi = false,
+
+    Text = 'Select Island',
+    Tooltip = 'Select Island',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.SelectedIsland = Value
+    end
+})
+
+TeleportsGroupBox:AddDropdown('MyDropdown', {
+    Values = {"Air", "Swim"},
+    Default = 1,
+    Multi = false,
+
+    Text = 'Select Method',
+    Tooltip = 'Select Method',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.SelectedIslandMethod = Value
     end
 })
 
@@ -425,8 +516,7 @@ AutoQuestGroupBox:AddToggle('MyToggle', {
                             firesignal(game:GetService("Players").LocalPlayer.PlayerGui.NPCCHAT.Frame.endChat.MouseButton1Click)
                         else
                             TweenTo(getgenv().ScriptOptions.Position, getgenv().ScriptOptions.TweenSpeed, Vector3.new(0, 0, 0))
-                        end
-                        
+                        end   
                     end
                 end)
             end

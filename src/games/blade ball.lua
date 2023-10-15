@@ -80,7 +80,7 @@ x = hookmetamethod(game, "__namecall", function(self, ...)
 	end
 	return x(self, ...)
 end)
-
+	
 _G.curveBall = true
 
 local ballCframe = nil
