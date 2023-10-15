@@ -323,6 +323,24 @@ PlayerFarmGroupBox:AddToggle('MyToggle', {
             end)
         end
     end
+}):AddKeyPicker('KeyPicker', {
+    Default = 'nil',
+    SyncToggleState = true,
+
+
+
+    Mode = 'Toggle',
+
+    Text = 'Player Farm',
+    NoUI = false,
+
+    Callback = function(Value)
+        
+    end,
+
+    ChangedCallback = function(New)
+        
+    end
 })
 
 PlayerFarmGroupBox:AddSlider('MySlider', {
