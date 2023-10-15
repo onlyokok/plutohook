@@ -590,7 +590,7 @@ local GetQuestTable = function()
     local quests = {}
 
     for _,npc in next, NPCs:GetChildren() do
-        if npc:FindFirstChild("ForceField") and npc:FindFirstChild("HumanoidRootPart") then
+        if npc:FindFirstChild("ForceField") and npc:FindFirstChild("QuestMark") and npc:FindFirstChild("HumanoidRootPart") then
             if not table.find(quests, npc.Name) then
                 table.insert(quests, npc.Name)
             end
@@ -615,11 +615,13 @@ AutoQuestGroupBox:AddToggle('MyToggle', {
                         keypress(Enum.KeyCode.T)
                         firesignal(game:GetService("Players").LocalPlayer.PlayerGui.NPCCHAT.Frame.go.MouseButton1Click)
                     else
-                        if game.Players.LocalPlayer.PlayerGui:FindFirstChild("NPCCHAT") then
-                            firesignal(game:GetService("Players").LocalPlayer.PlayerGui.NPCCHAT.Frame.endChat.MouseButton1Click)
-                        else
-                            TweenTo(getgenv().ScriptOptions.Position, getgenv().ScriptOptions.TweenSpeed, Vector3.new(0, 0, 0))
-                        end   
+                        pcall(function()
+                            if game.Players.LocalPlayer.PlayerGui:FindFirstChild("NPCCHAT") then
+                                firesignal(game:GetService("Players").LocalPlayer.PlayerGui.NPCCHAT.Frame.endChat.MouseButton1Click)
+                            else
+                                TweenTo(getgenv().ScriptOptions.Position, getgenv().ScriptOptions.TweenSpeed, Vector3.new(0, 0, 0))
+                            end   
+                        end)
                     end
                 end)
             end
