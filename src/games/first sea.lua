@@ -815,28 +815,6 @@ local GetClosestToCharacter = function()
     return ClosestPlayer
 end
 
-local oldNamecall;
-
-oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
-	local args = {...}
-	
-	if tostring(self) == "CIcklcon" then
-		if getgenv().ScriptOptions.SilentAim then
-            args[2]["Start"] = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
-
-            if getgenv().ScriptOptions.SilentAimMethod == "Cursor" then
-                args[2]["Position"] = GetClosestPlayerToCursor().Character.Head.Position
-            elseif getgenv().ScriptOptions.SilentAimMethod == "Distance" then
-                args[2]["Position"] = GetClosestToCharacter().Character.Head.Position
-            end
-
-            return self.FireServer(self, unpack(args))
-        end
-	end
-
-	return oldNamecall(self, ...)
-end)
-
 Library:OnUnload(function()
 
     for _,value in next, getgenv().ScriptOptions do
