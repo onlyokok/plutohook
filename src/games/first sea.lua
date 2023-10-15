@@ -43,7 +43,9 @@ getgenv().ScriptOptions = {
     NoFallDamage = false,
     NoDrown = false,
     NoDrownPart = nil,
-    FastM1 = false
+    FastM1 = false,
+    CharacterOffset = false,
+    CharacterOffsetAnimation = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(game:GetService("ReplicatedStorage").Effects.BossAwakens.DemonAwaken.awaken)
 }
 
 local Tabs = {
@@ -635,6 +637,26 @@ LocalPlayerGroupBox:AddToggle('MyToggle', {
     end
 })
 
+LocalPlayerGroupBox:AddToggle('MyToggle', {
+    Text = 'Character Offset',
+    Default = false,
+    Tooltip = 'Character Offset',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.CharacterOffset = Value
+
+        if getgenv().ScriptOptions.CharacterOffset then
+            getgenv().ScriptOptions.CharacterOffsetAnimation:Play()
+            getgenv().ScriptOptions.CharacterOffsetAnimation:AdjustSpeed(10)
+            task.wait(.35)
+            getgenv().ScriptOptions.CharacterOffsetAnimation:AdjustSpeed(0)
+            getgenv().ScriptOptions.CharacterOffsetAnimation.Priority = Enum.AnimationPriority.Action4
+        else
+            getgenv().ScriptOptions.CharacterOffsetAnimation:Stop()
+        end
+    end
+})
+
 Library:SetWatermarkVisibility(false)
 
 local FrameTimer = tick()
@@ -671,7 +693,8 @@ Library:OnUnload(function()
         getgenv().ScriptOptions.Tween:Cancel()
     end
 
-    print('Unloaded!')
+    getgenv().ScriptOptions.CharacterOffsetAnimation:Stop()
+
     getgenv().Loaded = false
     Library.Unloaded = true
 end)
