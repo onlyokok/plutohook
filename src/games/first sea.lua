@@ -20,8 +20,6 @@ getgenv().ScriptOptions = {
     SelectedEnemy = "Bandit",
     SelectedHitbox = "Head",
     SelectedMethod = "Selected",
-    SilentAim = false,
-    SilentAimMethod = "Cursor",
     Strength = false,
     Stamina = false,
     Defense = false,
@@ -279,31 +277,6 @@ AutoFarmGroupBox:AddButton({
     end,
     DoubleClick = false,
     Tooltip = 'Teleport to Fishman Island'
-})
-
-local SilentAimGroupBox = Tabs.Main:AddLeftGroupbox('Silent Aim')
-
-SilentAimGroupBox:AddToggle('MyToggle', {
-    Text = 'Silent Aim',
-    Default = false,
-    Tooltip = 'Silent Aim',
-
-    Callback = function(Value)
-        getgenv().ScriptOptions.SilentAim = Value
-    end
-})
-
-SilentAimGroupBox:AddDropdown('MyDropdown', {
-    Values = {"Cursor", "Distance"},
-    Default = 1,
-    Multi = false,
-
-    Text = 'Select Method',
-    Tooltip = 'Select Method',
-
-    Callback = function(Value)
-        getgenv().ScriptOptions.SilentAimMethod = Value
-    end
 })
 
 local AutoSkillpointsGroupBox = Tabs.Main:AddLeftGroupbox('Auto-add Skillpoints')
