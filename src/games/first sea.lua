@@ -29,14 +29,21 @@ getgenv().ScriptOptions = {
     TweenOngoing = false,
     SafeMode = false,
     AnticheatBypass = false,
-    TweenSpeed = 50,
+    TweenSpeed = 70,
     AutoQuest = false,
     SelectedQuest = nil,
     Position = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame,
     WalkSpeed = false,
     WalkSpeedAmount = 150,
     JumpPower = false,
-    JumpPowerAmount = 70
+    JumpPowerAmount = 70,
+    NoClip = false,
+    NoRagdoll = false,
+    NoStun = false,
+    NoFallDamage = false,
+    NoDrown = false,
+    NoDrownPart = nil,
+    FastM1 = false
 }
 
 local Tabs = {
@@ -161,7 +168,7 @@ AutoFarmGroupBox:AddToggle('MyToggle', {
     Callback = function(Value)
         getgenv().ScriptOptions.RifleFarm = Value
         while getgenv().ScriptOptions.RifleFarm do task.wait()
-            local success, error = pcall(function()
+            pcall(function()
                 if getgenv().ScriptOptions.SelectedMethod == "Selected" then
                     local Args = {
                         [1] = "fire",
@@ -204,8 +211,6 @@ AutoFarmGroupBox:AddToggle('MyToggle', {
                     game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("CIcklcon"):WaitForChild("gunFunctions"):InvokeServer(unpack(ReloadArgs))
                 end
             end)
-
-            warn(success, error)
         end
     end
 })
@@ -372,7 +377,7 @@ ScriptSettingsGroupBox:AddToggle('MyToggle', {
 
 ScriptSettingsGroupBox:AddSlider('MySlider', {
     Text = 'Tween Speed',
-    Default = 50,
+    Default = 70,
     Min = 20,
     Max = 70,
     Rounding = 0,
@@ -484,7 +489,7 @@ LocalPlayerGroupBox:AddSlider('MySlider', {
     Text = 'Walk Speed',
     Default = 50,
     Min = 50,
-    Max = 250,
+    Max = 300,
     Rounding = 0,
     Compact = false,
 
@@ -520,6 +525,113 @@ LocalPlayerGroupBox:AddSlider('MySlider', {
 
     Callback = function(Value)
         getgenv().ScriptOptions.JumpPowerAmount = Value
+    end
+})
+
+LocalPlayerGroupBox:AddToggle('MyToggle', {
+    Text = 'No Clip',
+    Default = false,
+    Tooltip = 'No Clip',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.NoClip = Value
+
+        if getgenv().ScriptOptions.NoClip then
+            while getgenv().ScriptOptions.NoClip do task.wait()
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CanCollide = false
+                game.Players.LocalPlayer.Character.UpperTorso.CanCollide = false
+                game.Players.LocalPlayer.Character.LowerTorso.CanCollide = false
+            end
+        else
+            task.wait()
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CanCollide = true
+            game.Players.LocalPlayer.Character.UpperTorso.CanCollide = true
+            game.Players.LocalPlayer.Character.LowerTorso.CanCollide = true
+        end
+    end
+})
+
+LocalPlayerGroupBox:AddToggle('MyToggle', {
+    Text = 'No Ragdoll',
+    Default = false,
+    Tooltip = 'No Ragdoll',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.NoRagdoll = Value
+
+        if getgenv().ScriptOptions.NoRagdoll then
+            getconnections(game:GetService("ReplicatedStorage").Events.Ragdoll.OnClientEvent)[1]:Disable()
+        else
+            getconnections(game:GetService("ReplicatedStorage").Events.Ragdoll.OnClientEvent)[1]:Enable()
+        end
+    end
+})
+
+LocalPlayerGroupBox:AddToggle('MyToggle', {
+    Text = 'No Stun',
+    Default = false,
+    Tooltip = 'No Stun',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.NoStun = Value
+
+        while getgenv().ScriptOptions.NoStun do task.wait()
+            pcall(function()
+                game.Players.LocalPlayer.Character.Stun:Remove()
+                game.Players.LocalPlayer.Character.HumanoidRootPart.knockback:Remove()
+            end)
+        end
+    end
+})
+
+LocalPlayerGroupBox:AddToggle('MyToggle', {
+    Text = 'No Fall Damage',
+    Default = false,
+    Tooltip = 'No Fall Damage',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.NoFallDamage = Value
+
+        if getgenv().ScriptOptions.NoFallDamage then
+            game.Players.LocalPlayer.Character.FallDamage.Disabled = true
+        else
+            game.Players.LocalPlayer.Character.FallDamage.Disabled = false
+        end
+    end
+})
+
+LocalPlayerGroupBox:AddToggle('MyToggle', {
+    Text = 'No Drown',
+    Default = false,
+    Tooltip = 'No Drown',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.NoDrown = Value
+
+        if getgenv().ScriptOptions.NoDrown then
+            if game.Players.LocalPlayer.Character:FindFirstChild("coatBubble") then
+                game.Players.LocalPlayer.Character.coatBubble:Remove()
+            else
+                getgenv().ScriptOptions.NoDrownPart = Instance.new("Part", game.Players.LocalPlayer.Character)
+                getgenv().ScriptOptions.NoDrownPart.Name = "coatBubble"
+            end
+        else
+            getgenv().ScriptOptions.NoDrownPart:Remove()
+        end
+    end
+})
+
+LocalPlayerGroupBox:AddToggle('MyToggle', {
+    Text = 'Fast M1',
+    Default = false,
+    Tooltip = 'No Drown',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.FastM1 = Value
+
+        while getgenv().ScriptOptions.FastM1 do task.wait()
+            getrenv()._G.resetM1()
+        end
     end
 })
 
