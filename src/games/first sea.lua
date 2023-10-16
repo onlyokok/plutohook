@@ -123,6 +123,7 @@ local NPCs = game.Workspace.NPCs
 
 local GetEnemies = function()
 	local enemies = {}
+    table.insert(enemies, "")
 
 	for _,enemy in next, NPCs:GetChildren() do
 		if enemy:FindFirstChild("HumanoidRootPart") and enemy:FindFirstChild("Humanoid").Health > 0 and not enemy:FindFirstChild("ForceField") and not table.find(enemies, enemy.Name) then
@@ -588,6 +589,7 @@ local AutoQuestGroupBox = Tabs.Main:AddRightGroupbox('Auto Quest')
 
 local GetQuestTable = function()
     local quests = {}
+    table.insert(quests, "")
 
     for _,npc in next, NPCs:GetChildren() do
         if npc:FindFirstChild("ForceField") and npc:FindFirstChild("QuestMark") and npc:FindFirstChild("HumanoidRootPart") then
@@ -610,18 +612,16 @@ AutoQuestGroupBox:AddToggle('MyToggle', {
         if getgenv().ScriptOptions.AutoQuest then
             while getgenv().ScriptOptions.AutoQuest do task.wait()
                 pcall(function()
-                    if game.ReplicatedStorage['Stats'..game.Players.LocalPlayer.Name].Quest.CurrentQuest.Value == "None" then
-                        TweenTo(NPCs[getgenv().ScriptOptions.SelectedQuest].HumanoidRootPart.CFrame, getgenv().ScriptOptions.TweenSpeed, Vector3.new(0, 0, 0))
+                    if game:GetService("Players").LocalPlayer.PlayerGui.Quest.Quest.Visible == false then
+                        TweenTo(workspace.NPCs[getgenv().ScriptOptions.SelectedQuest].HumanoidRootPart.CFrame, getgenv().ScriptOptions.TweenSpeed, Vector3.new(0, 0, 0))
                         keypress(Enum.KeyCode.T)
                         firesignal(game:GetService("Players").LocalPlayer.PlayerGui.NPCCHAT.Frame.go.MouseButton1Click)
                     else
                         pcall(function()
-                            if game.Players.LocalPlayer.PlayerGui:FindFirstChild("NPCCHAT") then
-                                firesignal(game:GetService("Players").LocalPlayer.PlayerGui.NPCCHAT.Frame.endChat.MouseButton1Click)
-                            else
-                                TweenTo(getgenv().ScriptOptions.Position, getgenv().ScriptOptions.TweenSpeed, Vector3.new(0, 0, 0))
-                            end   
+                            firesignal(game:GetService("Players").LocalPlayer.PlayerGui.NPCCHAT.Frame.endChat.MouseButton1Click) 
+                            TweenTo(getgenv().ScriptOptions.Position, getgenv().ScriptOptions.TweenSpeed, Vector3.new(0, 0, 0))
                         end)
+                        TweenTo(getgenv().ScriptOptions.Position, getgenv().ScriptOptions.TweenSpeed, Vector3.new(0, 0, 0))
                     end
                 end)
             end
