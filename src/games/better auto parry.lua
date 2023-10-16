@@ -40,7 +40,7 @@ game:GetService("RunService").RenderStepped:Connect(function()
         if (getVelocity().Magnitude / 2) < 25 then
             visualizer.Size = Vector3.new(20, 20, 20)
         else
-            visualizer.Size = Vector3.new(getVelocity().Magnitude / 2.4, getVelocity().Magnitude / 2.4, getVelocity().Magnitude / 2.4)
+            visualizer.Size = Vector3.new(getVelocity().Magnitude / 2.35, getVelocity().Magnitude / 2.35, getVelocity().Magnitude / 2.35)
         end
 
         if getDistance() <= visualizer.Size.Z / 2 and isTarget() then
@@ -56,7 +56,7 @@ task.spawn(function()
                 if v ~= game.Players.LocalPlayer then
                     local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).Magnitude
 
-                    if distance < 4.25 and getDistance() < 4.25 then
+                    if distance < 4.5 and getDistance() < 4.25 then
                         if isTarget() or v.Character:FindFirstChild("Highlight") then
                             keypress(Enum.KeyCode.F)
                         end
