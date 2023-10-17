@@ -32,10 +32,12 @@ end
 
 local visualizer = Instance.new("Part", workspace)
 visualizer.Material = Enum.Material.ForceField
-visualizer.Color = Color3.new(1, 1, 1)
+visualizer.Color = Color3.new(1, 0, 0)
 visualizer.CanCollide = false
 visualizer.Shape = "Ball"
 visualizer.CastShadow = false
+
+game.Lighting.ClockTime = 4
 
 game:GetService("RunService").RenderStepped:Connect(function()
     pcall(function()

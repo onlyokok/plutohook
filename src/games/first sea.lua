@@ -611,19 +611,19 @@ AutoQuestGroupBox:AddToggle('MyToggle', {
         getgenv().ScriptOptions.AutoQuest = Value
         if getgenv().ScriptOptions.AutoQuest then
             while getgenv().ScriptOptions.AutoQuest do task.wait()
-                pcall(function()
-                    if game:GetService("Players").LocalPlayer.PlayerGui.Quest.Quest.Visible == false then
+                if game.ReplicatedStorage['Stats'..game.Players.LocalPlayer.Name].Quest.CurrentQuest.Value == "None" then
+                    pcall(function()
                         TweenTo(workspace.NPCs[getgenv().ScriptOptions.SelectedQuest].HumanoidRootPart.CFrame, getgenv().ScriptOptions.TweenSpeed, Vector3.new(0, 0, 0))
                         keypress(Enum.KeyCode.T)
                         firesignal(game:GetService("Players").LocalPlayer.PlayerGui.NPCCHAT.Frame.go.MouseButton1Click)
-                    else
-                        pcall(function()
-                            firesignal(game:GetService("Players").LocalPlayer.PlayerGui.NPCCHAT.Frame.endChat.MouseButton1Click) 
-                            TweenTo(getgenv().ScriptOptions.Position, getgenv().ScriptOptions.TweenSpeed, Vector3.new(0, 0, 0))
-                        end)
-                        TweenTo(getgenv().ScriptOptions.Position, getgenv().ScriptOptions.TweenSpeed, Vector3.new(0, 0, 0))
-                    end
-                end)
+                    end)
+                    
+                    pcall(function()
+                        firesignal(game:GetService("Players").LocalPlayer.PlayerGui.NPCCHAT.Frame.endChat.MouseButton1Click)
+                    end)
+                else
+                    TweenTo(getgenv().ScriptOptions.Position, getgenv().ScriptOptions.TweenSpeed, Vector3.new(0, 0, 0))
+                end
             end
         else
             task.wait()
