@@ -62,9 +62,9 @@ task.spawn(function()
                 if v ~= game.Players.LocalPlayer then
                     local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).Magnitude
 
-                    if distance <= 5 and getDistance() <= 7 then
+                    if distance <= 3 and getDistance() <= 3 then
                         if isTarget() or v.Character:FindFirstChild("Highlight") then
-                            for i = 1,20 do
+                            for i = 1,100 do
                                 keypress(Enum.KeyCode.F)
                             end
                         end
@@ -85,7 +85,7 @@ x = hookmetamethod(game, "__namecall", function(self, ...)
 	local m = getnamecallmethod()
 	local args = {...}
 	if self.Name == "Parried" and m == "Play" then
-		self.SoundId = "rbxassetid://7204949322"
+		self.SoundId = "rbxassetid://7512929338"
 	end
 	return x(self, ...)
 end)
