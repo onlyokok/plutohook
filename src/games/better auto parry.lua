@@ -62,15 +62,15 @@ task.spawn(function()
                 if v ~= game.Players.LocalPlayer then
                     local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).Magnitude
 
-                    if distance() <= 1.5 and getDistance() <= 1.5 then
+                    if distance <= 1.5 and getDistance() <= 1.5 then
                         if isTarget() or v.Character:FindFirstChild("Highlight") then
-                            for i = 1,300 do
+                            for i = 1,4000 do
                                 keypress(Enum.KeyCode.F)
                             end
                         end
                     elseif distance <= 3 and getDistance() <= 3 then
                         if isTarget() or v.Character:FindFirstChild("Highlight") then
-                            for i = 1,110 do
+                            for i = 1,500 do
                                 keypress(Enum.KeyCode.F)
                             end
                         end
