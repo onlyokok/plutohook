@@ -220,17 +220,21 @@ game.Players.PlayerAdded:Connect(function(v)
         library:addText(v.Character.Head, "["..v.Name.."]")
         library:addTracer(v.Character.HumanoidRootPart)
     end
+    v.CharacterAdded:Connect(function(c)
+        library:addText(c.Head, "["..v.Name.."]")
+        library:addTracer(c.HumanoidRootPart)
+    end)
 end)
 
 for _,v in next, workspace:GetDescendants() do
-	if v.Name == "Door" then
+	if v.Name == "Door" and v:IsA("MeshPart") then
 		library:addText(v, "[Door]")
 		library:addTracer(v)
 	end
 end
 
 workspace.DescendantAdded:Connect(function(v)
-	if v.Name == "Door" then
+	if v.Name == "Door" and v:IsA("MeshPart") then
 		library:addText(v, "[Door]")
 		library:addTracer(v)
 	end
