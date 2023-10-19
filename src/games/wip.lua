@@ -1,4 +1,4 @@
-local library = {
+getgenv().library = {
     enabled = true,
     textColor = Color3.new(1, 1, 1),
     tracerOrigin = "Bottom", -- options = {"Bottom", "Middle", "Top", "Cursor"}
@@ -9,9 +9,6 @@ local library = {
     cache = {},
     connections = {}
 }
-
--- allows us to access the library later on
-getgenv().library = library
 
 function library.new(obj, properties)
     -- creating drawing instance
@@ -40,7 +37,7 @@ function library:getTeamColor(plr)
     return game.Players[plr].TeamColor
 end
 
-function library:getTeamMates()
+function library:getTeammates()
     local players = {}
 
     for _, player in next, game:GetService("Players"):GetPlayers() do
@@ -94,8 +91,18 @@ function library:addText(obj, text)
         object = obj
         vector, onScreen = workspace.CurrentCamera:WorldToViewportPoint(object.Position)
 
+        local nilInstances = getnilinstances()
+
+        local function doesObjectExist()
+            if not table.find(nilInstances, object) then
+                return true
+            else
+                return false
+            end
+        end
+
         if self.enabled then
-            if object ~= nil then
+            if doesObjectExist() then
                 text.Position = Vector2.new(vector.x, vector.y)
 
                 if self.highlight then
@@ -114,7 +121,7 @@ function library:addText(obj, text)
                     text.Visible = false
                 end
             else
-                text.Visible = false
+                text:Remove()
             end
         else
             text.Visible = false
@@ -143,8 +150,18 @@ function library:addTracer(obj)
         object = obj
         vector, onScreen = workspace.CurrentCamera:WorldToViewportPoint(object.Position)
 
+        local nilInstances = getnilinstances()
+
+        local function doesObjectExist()
+            if not table.find(nilInstances, object) then
+                return true
+            else
+                return false
+            end
+        end
+
         if self.enabled then
-            if object ~= nil then
+            if doesObjectExist() then
                 if self.tracerOrigin == "Bottom" then
                     tracer.From = Vector2.new(workspace.CurrentCamera.ViewportSize.X / 2, workspace.CurrentCamera.ViewportSize.Y / 1)
                 end
@@ -167,7 +184,7 @@ function library:addTracer(obj)
                     tracer.Visible = false
                 end
             else
-                tracer.Visible = false
+                tracer:Remove()
             end
         else
             tracer.Visible = false
@@ -192,14 +209,28 @@ end
 
 for i,v in next, game.Players:GetChildren() do
 	if v and v.Character and v.Character.Head and v ~= game.Players.LocalPlayer then
-        local text = library:addText(v.Character.Head, "["..v.Name.."]", "a")
-        local tracer = library:addTracer(v.Character.HumanoidRootPart, "a")
+        library:addText(v.Character.Head, "["..v.Name.."]", "a")
+        library:addTracer(v.Character.HumanoidRootPart, "a")
     end
 end
 
 game.Players.PlayerAdded:Connect(function(v)
     if v.Character and v.Character.HumanoidRootPart and v.Character.Head then
-        local text = library:addText(v.Character.Head, "["..v.Name.."]", "a")
-        local tracer = library:addTracer(v.Character.HumanoidRootPart, "a")
+        library:addText(v.Character.Head, "["..v.Name.."]")
+        library:addTracer(v.Character.HumanoidRootPart)
     end
+end)
+
+for _,v in next, workspace:GetDescendants() do
+	if v.Name == "Door" then
+		library:addText(v, "[Door]")
+		library:addTracer(v)
+	end
+end
+
+workspace.DescendantAdded:Connect(function(v)
+	if v.Name == "Door" then
+		library:addText(v, "[Door]")
+		library:addTracer(v)
+	end
 end)
