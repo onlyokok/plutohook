@@ -211,7 +211,7 @@ end
 
 for i,v in next, game.Players:GetChildren() do
 	if v and v.Character and v.Character.Head and v ~= game.Players.LocalPlayer then
-        library:addText(v.Character.Head, "["..v.Name.."]["..v.Character.Humanoid.Health.."/"..v.Character.Humanoid.MaxHealth.."]")
+        library:addText(v.Character.Head, "["..v.Name.."]")
         library:addTracer(v.Character.HumanoidRootPart)
     end
 end
