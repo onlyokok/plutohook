@@ -3,9 +3,9 @@ getgenv().library = {
     textColor = Color3.new(1, 1, 1),
     tracerOrigin = "Bottom", -- options = {"Bottom", "Middle", "Top", "Cursor"}
     highlight = true,
-    highlightColor = Color3.new(1, 0.960784, 0.435294),
+    highlightColor = Color3.new(0.407843, 0.545098, 0.839215),
     font = 2,
-    textSize = 14,
+    textSize = 15,
     cache = {},
     connections = {}
 }
@@ -218,14 +218,28 @@ end
 
 game.Players.PlayerAdded:Connect(function(v)
     if v.Character and v.Character.HumanoidRootPart and v.Character.Head then
-        library:addText(v.Character.Head, "["..v.Name.."]["..v.Character.Humanoid.Health.."/"..v.Character.Humanoid.MaxHealth.."]")
+        library:addText(v.Character.Head, "["..v.Name.."]")
         library:addTracer(v.Character.HumanoidRootPart)
     end
     v.CharacterAdded:Connect(function(c)
         if c.Head and c.HumanoidRootPart then
-            library:addText(c.Head, "["..v.Name.."]["..c.Humanoid.Health.."/"..c.Humanoid.MaxHealth.."]")
+            library:addText(c.Head, "["..v.Name.."]")
             library:addTracer(c.HumanoidRootPart)
         end
     end)
+end)
+
+for i,v in next, workspace:GetDescendants() do
+    if v.Parent == workspace.Balls then
+    	library:addText(v, "[Ball]")
+        library:addTracer(v)
+    end
+end
+
+workspace.DescendantAdded:Connect(function(v)
+    if v.Parent == workspace.Balls then
+    	library:addText(v, "[Ball]")
+        library:addTracer(v)
+    end
 end)
 setfpscap(1000)
