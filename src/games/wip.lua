@@ -3,7 +3,7 @@ getgenv().library = {
     textColor = Color3.new(1, 1, 1),
     tracerOrigin = "Bottom", -- options = {"Bottom", "Middle", "Top", "Cursor"}
     highlight = true,
-    highlightColor = Color3.new(0.407843, 0.545098, 0.839215),
+    highlightColor = Color3.new(0, 0.8, 0.1),
     font = 2,
     textSize = 15,
     cache = {},
@@ -87,46 +87,49 @@ function library:addText(obj, objectText)
     local vector, onScreen;
 
     -- creating the connection
-    local connection = game:GetService("RunService").RenderStepped:Connect(function()
-        object = obj
-
-        local nilInstances = getnilinstances()
-
-        local function doesObjectExist()
-            if not table.find(nilInstances, object) then
-                return true
-            else
-                return false
+    task.spawn(function()
+        local connection = game:GetService("RunService").RenderStepped:Connect(function()
+            object = obj
+            updatedText = objectText
+    
+            local nilInstances = getnilinstances()
+    
+            local function doesObjectExist()
+                if not table.find(nilInstances, object) then
+                    return true
+                else
+                    return false
+                end
             end
-        end
-
-        if self.enabled then
-            if doesObjectExist() then
-                vector, onScreen = workspace.CurrentCamera:WorldToViewportPoint(object.Position)
-                text.Position = Vector2.new(vector.x, vector.y)
-                text.Text = objectText
-
-                if self.highlight then
-                    if self:isObjectNearCursor(object, 150) then
-                        text.Color = self.highlightColor
+    
+            if self.enabled then
+                if doesObjectExist() then
+                    vector, onScreen = workspace.CurrentCamera:WorldToViewportPoint(object.Position)
+                    text.Position = Vector2.new(vector.x, vector.y)
+                    text.Text = objectText
+    
+                    if self.highlight then
+                        if self:isObjectNearCursor(object, 150) then
+                            text.Color = self.highlightColor
+                        else
+                            text.Color = self.textColor
+                        end
                     else
                         text.Color = self.textColor
                     end
+    
+                    if onScreen then
+                        text.Visible = true
+                    else
+                        text.Visible = false
+                    end
                 else
-                    text.Color = self.textColor
-                end
-
-                if onScreen then
-                    text.Visible = true
-                else
-                    text.Visible = false
+                    text:Remove()
                 end
             else
-                text:Remove()
+                text.Visible = false
             end
-        else
-            text.Visible = false
-        end
+        end)
     end)
 
     -- inserting the text's update connection so that it can be disconnected if needed
@@ -211,7 +214,7 @@ end
 
 for i,v in next, game.Players:GetChildren() do
 	if v and v.Character and v.Character.Head and v ~= game.Players.LocalPlayer then
-        library:addText(v.Character.Head, "["..v.Name.."]")
+        library:addText(v.Character.Head, "["..v.Name.."]["..v.Character.Humanoid.Health.."/"..v.Character.Humanoid.MaxHealth.."]")
         library:addTracer(v.Character.HumanoidRootPart)
     end
 end
