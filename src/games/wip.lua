@@ -106,7 +106,7 @@ function library:addText(obj, text)
                 text.Position = Vector2.new(vector.x, vector.y)
 
                 if self.highlight then
-                    if library:isObjectNearCursor(object, 100) then
+                    if self:isObjectNearCursor(object, 100) then
                         text.Color = self.highlightColor
                     else
                         text.Color = self.textColor
@@ -170,7 +170,7 @@ function library:addTracer(obj)
                 tracer.To = Vector2.new(vector.x, vector.y)
 
                 if self.highlight then
-                    if library:isObjectNearCursor(object, 100) then
+                    if self:isObjectNearCursor(object, 100) then
                         tracer.Color = self.highlightColor
                     else
                         tracer.Color = self.textColor
