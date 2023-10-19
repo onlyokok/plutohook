@@ -89,7 +89,6 @@ function library:addText(obj, text)
     -- creating the connection
     local connection = game:GetService("RunService").RenderStepped:Connect(function()
         object = obj
-        vector, onScreen = workspace.CurrentCamera:WorldToViewportPoint(object.Position)
 
         local nilInstances = getnilinstances()
 
@@ -103,6 +102,7 @@ function library:addText(obj, text)
 
         if self.enabled then
             if doesObjectExist() then
+                vector, onScreen = workspace.CurrentCamera:WorldToViewportPoint(object.Position)
                 text.Position = Vector2.new(vector.x, vector.y)
 
                 if self.highlight then
@@ -148,7 +148,6 @@ function library:addTracer(obj)
     -- creating the connection
     local connection = game:GetService("RunService").RenderStepped:Connect(function()
         object = obj
-        vector, onScreen = workspace.CurrentCamera:WorldToViewportPoint(object.Position)
 
         local nilInstances = getnilinstances()
 
@@ -162,6 +161,8 @@ function library:addTracer(obj)
 
         if self.enabled then
             if doesObjectExist() then
+                vector, onScreen = workspace.CurrentCamera:WorldToViewportPoint(object.Position)
+
                 if self.tracerOrigin == "Bottom" then
                     tracer.From = Vector2.new(workspace.CurrentCamera.ViewportSize.X / 2, workspace.CurrentCamera.ViewportSize.Y / 1)
                 end
