@@ -3,7 +3,7 @@ getgenv().library = {
     textColor = Color3.new(1, 1, 1),
     tracerOrigin = "Bottom", -- options = {"Bottom", "Middle", "Top", "Cursor"}
     highlight = true,
-    highlightColor = Color3.new(0, 0, 1),
+    highlightColor = Color3.new(1, 0.960784, 0.435294),
     font = 2,
     textSize = 14,
     cache = {},
@@ -71,9 +71,9 @@ function library:isObjectNearCursor(obj, range)
     end
 end
 
-function library:addText(obj, text)
+function library:addText(obj, objectText)
     local text = self.new("Text", {
-        Text = text,
+        Text = objectText,
         Center = true,
         Color = self.textColor,
         Font = self.font,
@@ -104,9 +104,10 @@ function library:addText(obj, text)
             if doesObjectExist() then
                 vector, onScreen = workspace.CurrentCamera:WorldToViewportPoint(object.Position)
                 text.Position = Vector2.new(vector.x, vector.y)
+                text.Text = objectText
 
                 if self.highlight then
-                    if self:isObjectNearCursor(object, 100) then
+                    if self:isObjectNearCursor(object, 150) then
                         text.Color = self.highlightColor
                     else
                         text.Color = self.textColor
@@ -170,7 +171,7 @@ function library:addTracer(obj)
                 tracer.To = Vector2.new(vector.x, vector.y)
 
                 if self.highlight then
-                    if self:isObjectNearCursor(object, 100) then
+                    if self:isObjectNearCursor(object, 150) then
                         tracer.Color = self.highlightColor
                     else
                         tracer.Color = self.textColor
