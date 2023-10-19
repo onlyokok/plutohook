@@ -210,32 +210,19 @@ end
 
 for i,v in next, game.Players:GetChildren() do
 	if v and v.Character and v.Character.Head and v ~= game.Players.LocalPlayer then
-        library:addText(v.Character.Head, "["..v.Name.."]", "a")
-        library:addTracer(v.Character.HumanoidRootPart, "a")
+        library:addText(v.Character.Head, "["..v.Name.."]["..v.Character.Humanoid.Health.."/"..v.Character.Humanoid.MaxHealth.."]")
+        library:addTracer(v.Character.HumanoidRootPart)
     end
 end
 
 game.Players.PlayerAdded:Connect(function(v)
     if v.Character and v.Character.HumanoidRootPart and v.Character.Head then
-        library:addText(v.Character.Head, "["..v.Name.."]")
+        library:addText(v.Character.Head, "["..v.Name.."]["..v.Character.Humanoid.Health.."/"..v.Character.Humanoid.MaxHealth.."]")
         library:addTracer(v.Character.HumanoidRootPart)
     end
     v.CharacterAdded:Connect(function(c)
-        library:addText(c.Head, "["..v.Name.."]")
+        library:addText(c.Head, "["..v.Name.."]["..c.Humanoid.Health.."/"..c.Humanoid.MaxHealth.."]")
         library:addTracer(c.HumanoidRootPart)
     end)
 end)
-
-for _,v in next, workspace:GetDescendants() do
-	if v.Name == "Door" and v:IsA("MeshPart") then
-		library:addText(v, "[Door]")
-		library:addTracer(v)
-	end
-end
-
-workspace.DescendantAdded:Connect(function(v)
-	if v.Name == "Door" and v:IsA("MeshPart") then
-		library:addText(v, "[Door]")
-		library:addTracer(v)
-	end
-end)
+setfpscap(1000)
