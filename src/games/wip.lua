@@ -221,8 +221,10 @@ game.Players.PlayerAdded:Connect(function(v)
         library:addTracer(v.Character.HumanoidRootPart)
     end
     v.CharacterAdded:Connect(function(c)
-        library:addText(c.Head, "["..v.Name.."]["..c.Humanoid.Health.."/"..c.Humanoid.MaxHealth.."]")
-        library:addTracer(c.HumanoidRootPart)
+        if c.Head and c.HumanoidRootPart then
+            library:addText(c.Head, "["..v.Name.."]["..c.Humanoid.Health.."/"..c.Humanoid.MaxHealth.."]")
+            library:addTracer(c.HumanoidRootPart)
+        end
     end)
 end)
 setfpscap(1000)
