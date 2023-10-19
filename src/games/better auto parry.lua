@@ -64,13 +64,13 @@ task.spawn(function()
 
                     if distance <= 1.5 and getDistance() <= 1.5 then
                         if isTarget() or v.Character:FindFirstChild("Highlight") then
-                            for i = 1,5000 do
+                            for i = 1,2000 do
                                 keypress(Enum.KeyCode.F)
                             end
                         end
                     elseif distance <= 3 and getDistance() <= 3 then
                         if isTarget() or v.Character:FindFirstChild("Highlight") then
-                            for i = 1,750 do
+                            for i = 1,400 do
                                 keypress(Enum.KeyCode.F)
                             end
                         end
