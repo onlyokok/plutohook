@@ -21,8 +21,8 @@ getgenv().ScriptOptions = {
     SelectedHitbox = "Head",
     SelectedMethod = "Closest",
     PlayerFarm = false,
-    PlayerFarmRange = 30,
-    PlayerFarmOffset = 5,
+    PlayerFarmRange = 10,
+    PlayerFarmOffset = 0,
     PlayerFarmMethod = "Above",
     Strength = false,
     Stamina = false,
@@ -52,6 +52,7 @@ getgenv().ScriptOptions = {
     NoDrownPart = nil,
     FastM1 = false,
     CharacterOffset = false,
+    GetGeppo = false,
     CharacterOffsetAnimation = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(game:GetService("ReplicatedStorage").Effects.BossAwakens.DemonAwaken.awaken)
 }
 
@@ -282,6 +283,17 @@ AutoFarmGroupBox:AddButton({
     end,
     DoubleClick = false,
     Tooltip = 'Teleport to Fishman Island'
+})
+
+AutoFarmGroupBox:AddButton({
+    Text = 'Get World Scroll',
+    Func = function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-12186.1064453125, 0.42061471939086914, -18545.76953125)
+        task.wait(.4)
+        fireproximityprompt(workspace.Effects:WaitForChild("World Scroll").ProximityPrompt)
+    end,
+    DoubleClick = false,
+    Tooltip = 'Get World Scroll'
 })
 
 local PlayerFarmGroupBox = Tabs.Main:AddLeftGroupbox('Player Farm')
@@ -611,19 +623,19 @@ AutoQuestGroupBox:AddToggle('MyToggle', {
         getgenv().ScriptOptions.AutoQuest = Value
         if getgenv().ScriptOptions.AutoQuest then
             while getgenv().ScriptOptions.AutoQuest do task.wait()
-                if game.ReplicatedStorage['Stats'..game.Players.LocalPlayer.Name].Quest.CurrentQuest.Value == "None" then
-                    pcall(function()
-                        TweenTo(workspace.NPCs[getgenv().ScriptOptions.SelectedQuest].HumanoidRootPart.CFrame, getgenv().ScriptOptions.TweenSpeed, Vector3.new(0, 0, 0))
+                pcall(function()
+                    if game.ReplicatedStorage['Stats'..game.Players.LocalPlayer.Name].Quest.CurrentQuest.Value == "None" then
+                        TweenTo(workspace.NPCs[getgenv().ScriptOptions.SelectedQuest].HumanoidRootPart.CFrame, getgenv().ScriptOptions.TweenSpeed, Vector3.new(0, 3, 0))
                         keypress(Enum.KeyCode.T)
                         firesignal(game:GetService("Players").LocalPlayer.PlayerGui.NPCCHAT.Frame.go.MouseButton1Click)
-                    end)
-                    
-                    pcall(function()
                         firesignal(game:GetService("Players").LocalPlayer.PlayerGui.NPCCHAT.Frame.endChat.MouseButton1Click)
-                    end)
-                else
-                    TweenTo(getgenv().ScriptOptions.Position, getgenv().ScriptOptions.TweenSpeed, Vector3.new(0, 0, 0))
-                end
+                    else
+                        pcall(function()
+                            firesignal(game:GetService("Players").LocalPlayer.PlayerGui.NPCCHAT.Frame.endChat.MouseButton1Click)
+                        end)
+                        TweenTo(getgenv().ScriptOptions.Position, getgenv().ScriptOptions.TweenSpeed, Vector3.new(0, 0, 0))
+                    end
+                end)
             end
         else
             task.wait()
@@ -848,6 +860,40 @@ LocalPlayerGroupBox:AddToggle('MyToggle', {
             getgenv().ScriptOptions.CharacterOffsetAnimation.Priority = Enum.AnimationPriority.Action4
         else
             getgenv().ScriptOptions.CharacterOffsetAnimation:Stop()
+        end
+    end
+}):AddKeyPicker('KeyPicker', {
+    Default = 'nil',
+    SyncToggleState = true,
+
+
+
+    Mode = 'Toggle',
+
+    Text = 'Player Farm',
+    NoUI = false,
+
+    Callback = function(Value)
+        
+    end,
+
+    ChangedCallback = function(New)
+        
+    end
+})
+
+LocalPlayerGroupBox:AddToggle('MyToggle', {
+    Text = 'Get Geppo',
+    Default = false,
+    Tooltip = 'Get Geppo',
+
+    Callback = function(Value)
+        getgenv().ScriptOptions.GetGeppo = Value
+
+        if getgenv().ScriptOptions.GetGeppo then
+            game:GetService("ReplicatedStorage")['Stats'..game.Players.LocalPlayer.Name].Skills.skyWalk.Value = true
+        else
+            game:GetService("ReplicatedStorage")['Stats'..game.Players.LocalPlayer.Name].Skills.skyWalk.Value = false
         end
     end
 })
