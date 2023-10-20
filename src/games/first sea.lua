@@ -601,7 +601,7 @@ local AutoQuestGroupBox = Tabs.Main:AddRightGroupbox('Auto Quest')
 
 local GetQuestTable = function()
     local quests = {}
-    table.insert(quests, "")
+    table.insert(quests, "-")
 
     for _,npc in next, NPCs:GetChildren() do
         if npc:FindFirstChild("ForceField") and npc:FindFirstChild("QuestMark") and npc:FindFirstChild("HumanoidRootPart") then
