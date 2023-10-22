@@ -6,6 +6,153 @@ local Library = loadstring(game:HttpGet(Repository.."linorias/source.lua"))()
 local ThemeManager = loadstring(game:HttpGet(Repository.."linorias/thememanager.lua"))()
 local SaveManager = loadstring(game:HttpGet(Repository.."linorias/savemanager.lua"))()
 
+local tweenService = game:GetService("TweenService")
+local info = TweenInfo.new(.45, Enum.EasingStyle.Sine)
+local coreGui = game:GetService("CoreGui")
+
+getgenv().loaderLibrary = {}
+loaderLibrary.__index = loaderLibrary
+
+function loaderLibrary.new(type, properties)
+    local object = Instance.new(type)
+    local props = properties or {}
+
+    for property, value in next, props do
+        object[property] = value
+    end
+
+    return object
+end
+
+function loaderLibrary:createLoader()
+    local loader = setmetatable({}, self)
+
+    loader.loader = self.new("ScreenGui", {
+        Name = "Loader",
+        Parent = coreGui
+    })
+
+    local background = self.new("Frame", {
+        Name = "Background",
+        Parent = loader.loader,
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        BackgroundColor3 = Color3.fromRGB(100, 100, 100),
+        BackgroundTransparency = 1,
+        BorderColor3 = Color3.fromRGB(0, 0, 0),
+        BorderSizePixel = 0,
+        Position = UDim2.new(0.499635577, 0, 0.5, 0),
+        Size = UDim2.new(0, 457, 0, 234)
+    })
+
+    local corner = self.new("UICorner", {
+        CornerRadius = UDim.new(0, 5),
+        Name = "Corner",
+        Parent = background
+    })
+
+    local gradient = self.new("UIGradient", {
+        Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(63, 63, 63))},
+        Rotation = 90,
+        Name = "Gradient",
+        Parent = background
+    })
+
+    local stroke = self.new("UIStroke", {
+        ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+        Color = Color3.fromRGB(120, 120, 120),
+        Transparency = 1,
+        Name = "Stroke",
+        Parent = background
+    })
+
+    local dropShadow = self.new("ImageLabel", {
+        Name = "DropShadow",
+        Parent = background,
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        BackgroundTransparency = 1.000,
+        BorderSizePixel = 0,
+        Position = UDim2.new(0.5, 0, 0.5, 0),
+        Size = UDim2.new(1, 47, 1, 47),
+        ZIndex = -1,
+        Image = "rbxassetid://6014261993",
+        ImageColor3 = Color3.fromRGB(56, 56, 56),
+        ImageTransparency = 1,
+        ScaleType = Enum.ScaleType.Slice,
+        SliceCenter = Rect.new(49, 49, 450, 450)
+    })
+
+    local title = self.new("TextLabel", {
+        Name = "Title",
+        Parent = background,
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+        BackgroundTransparency = 1.000,
+        TextTransparency = 1,
+        BorderColor3 = Color3.fromRGB(0, 0, 0),
+        BorderSizePixel = 0,
+        Position = UDim2.new(0.5, 0, 0.5, 0),
+        Size = UDim2.new(1, 0, 1, 0),
+        FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.SemiBold),
+        Text = "Soulware Loader",
+        TextColor3 = Color3.fromRGB(160, 160, 160),
+        TextScaled = false,
+        TextSize = 14.000,
+        TextWrapped = true
+    })
+
+    function loader:load()
+        local backgroundTweenShow = tweenService:Create(background, info, {BackgroundTransparency = 0})
+        backgroundTweenShow:Play()
+
+        local titleTweenShow = tweenService:Create(title, info, {TextTransparency = 0})
+        titleTweenShow:Play()
+
+        local strokeTweenShow = tweenService:Create(stroke, info, {Transparency = 0})
+        strokeTweenShow:Play()
+
+        local dropShadowTweenShow = tweenService:Create(dropShadow, info, {ImageTransparency = 0})
+        dropShadowTweenShow:Play()
+
+        local cornerTweenIn = tweenService:Create(corner, info, {CornerRadius = UDim.new(0, 15)})
+        cornerTweenIn:Play()
+
+        local textSizeIn = tweenService:Create(title, info, {TextSize = 25})
+        textSizeIn:Play()
+    end
+
+    function loader:unload()
+        title.Text = "Loaded"
+
+        task.wait(1)
+
+        local backgroundTweenHide = tweenService:Create(background, info, {BackgroundTransparency = 1})
+        backgroundTweenHide:Play()
+
+        local titleTweenHide = tweenService:Create(title, info, {TextTransparency = 1})
+        titleTweenHide:Play()
+
+        local strokeTweenHide = tweenService:Create(stroke, info, {Transparency = 1})
+        strokeTweenHide:Play()
+
+        local dropShadowTweenHide = tweenService:Create(dropShadow, info, {ImageTransparency = 1})
+        dropShadowTweenHide:Play()
+
+        local cornerTweenOut = tweenService:Create(corner, info, {CornerRadius = UDim.new(0, 5)})
+        cornerTweenOut:Play()
+
+        local textSizeOut = tweenService:Create(title, info, {TextSize = 20})
+        textSizeOut:Play()
+    end
+
+    
+    return loader
+end
+
+local loader = loaderLibrary:createLoader()
+loader:load()
+task.wait(math.random(1, 5))
+loader:unload()
+
 local Window = Library:CreateWindow({
     Title = 'SoulHub',
     Center = true,
