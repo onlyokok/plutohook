@@ -24,8 +24,9 @@ function loaderLibrary.new(type, properties)
     return object
 end
 
-function loaderLibrary:createLoader()
+function loaderLibrary:createLoader(header)
     local loader = setmetatable({}, self)
+    loader.header = header
 
     loader.loader = self.new("ScreenGui", {
         Name = "Loader",
@@ -41,11 +42,11 @@ function loaderLibrary:createLoader()
         BorderColor3 = Color3.fromRGB(0, 0, 0),
         BorderSizePixel = 0,
         Position = UDim2.new(0.499635577, 0, 0.5, 0),
-        Size = UDim2.new(0, 457, 0, 234)
+        Size = UDim2.new(0, 407, 0, 284)
     })
 
     local corner = self.new("UICorner", {
-        CornerRadius = UDim.new(0, 5),
+        CornerRadius = UDim.new(0, 15),
         Name = "Corner",
         Parent = background
     })
@@ -93,7 +94,7 @@ function loaderLibrary:createLoader()
         Position = UDim2.new(0.5, 0, 0.5, 0),
         Size = UDim2.new(1, 0, 1, 0),
         FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.SemiBold),
-        Text = "Soulware Loader",
+        Text = loader.header.." Loader",
         TextColor3 = Color3.fromRGB(85, 123, 198),
         TextScaled = false,
         TextSize = 14.000,
@@ -104,6 +105,9 @@ function loaderLibrary:createLoader()
         local backgroundTweenShow = tweenService:Create(background, info, {BackgroundTransparency = 0})
         backgroundTweenShow:Play()
 
+        local backgroundTweenSize = tweenService:Create(background, info, {Size = UDim2.new(0, 457, 0, 234)})
+        backgroundTweenSize:Play()
+
         local titleTweenShow = tweenService:Create(title, info, {TextTransparency = 0})
         titleTweenShow:Play()
 
@@ -113,7 +117,7 @@ function loaderLibrary:createLoader()
         local dropShadowTweenShow = tweenService:Create(dropShadow, info, {ImageTransparency = 0.6})
         dropShadowTweenShow:Play()
 
-        local cornerTweenIn = tweenService:Create(corner, info, {CornerRadius = UDim.new(0, 15)})
+        local cornerTweenIn = tweenService:Create(corner, info, {CornerRadius = UDim.new(0, 4)})
         cornerTweenIn:Play()
 
         local textSizeIn = tweenService:Create(title, info, {TextSize = 25})
@@ -128,6 +132,9 @@ function loaderLibrary:createLoader()
         local backgroundTweenHide = tweenService:Create(background, info, {BackgroundTransparency = 1})
         backgroundTweenHide:Play()
 
+        local backgroundTweenSize = tweenService:Create(background, info, {Size = UDim2.new(0, 407, 0, 284)})
+        backgroundTweenSize:Play()
+
         local titleTweenHide = tweenService:Create(title, info, {TextTransparency = 1})
         titleTweenHide:Play()
 
@@ -137,18 +144,22 @@ function loaderLibrary:createLoader()
         local dropShadowTweenHide = tweenService:Create(dropShadow, info, {ImageTransparency = 1})
         dropShadowTweenHide:Play()
 
-        local cornerTweenOut = tweenService:Create(corner, info, {CornerRadius = UDim.new(0, 5)})
+        local cornerTweenOut = tweenService:Create(corner, info, {CornerRadius = UDim.new(0, 15)})
         cornerTweenOut:Play()
 
         local textSizeOut = tweenService:Create(title, info, {TextSize = 20})
         textSizeOut:Play()
+
+        textSizeOut.Completed:Connect(function()
+            loader.loader:Remove()
+        end)
     end
 
     
     return loader
 end
 
-local loader = loaderLibrary:createLoader()
+local loader = loaderLibrary:createLoader("Soulware")
 loader:load()
 task.wait(math.random(1, 5))
 loader:unload()
@@ -423,25 +434,27 @@ AutoFarmGroupBox:AddDropdown('MyDropdown', {
     end
 })
 
-AutoFarmGroupBox:AddButton({
-    Text = 'Teleport to Fishman Island',
-    Func = function()
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(5639.86865, -92.762001, -16611.4688)
-    end,
-    DoubleClick = false,
-    Tooltip = 'Teleport to Fishman Island'
-})
-
-AutoFarmGroupBox:AddButton({
-    Text = 'Get World Scroll',
-    Func = function()
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-12186.1064453125, 0.42061471939086914, -18545.76953125)
-        task.wait(.4)
-        fireproximityprompt(workspace.Effects:WaitForChild("World Scroll").ProximityPrompt)
-    end,
-    DoubleClick = false,
-    Tooltip = 'Get World Scroll'
-})
+if game.PlaceId == 3978370137 then
+    AutoFarmGroupBox:AddButton({
+        Text = 'Teleport to Fishman Island',
+        Func = function()
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(5639.86865, -92.762001, -16611.4688)
+        end,
+        DoubleClick = false,
+        Tooltip = 'Teleport to Fishman Island'
+    })
+    
+    AutoFarmGroupBox:AddButton({
+        Text = 'Get World Scroll',
+        Func = function()
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-12186.1064453125, 0.42061471939086914, -18545.76953125)
+            task.wait(.4)
+            fireproximityprompt(workspace.Effects:WaitForChild("World Scroll").ProximityPrompt)
+        end,
+        DoubleClick = false,
+        Tooltip = 'Get World Scroll'
+    })
+end
 
 local PlayerFarmGroupBox = Tabs.Main:AddLeftGroupbox('Player Farm')
 
@@ -1017,7 +1030,7 @@ LocalPlayerGroupBox:AddToggle('MyToggle', {
 
     Mode = 'Toggle',
 
-    Text = 'Player Farm',
+    Text = 'Character Offset',
     NoUI = false,
 
     Callback = function(Value)
