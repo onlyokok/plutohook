@@ -36,7 +36,7 @@ function loaderLibrary:createLoader()
         Name = "Background",
         Parent = loader.loader,
         AnchorPoint = Vector2.new(0.5, 0.5),
-        BackgroundColor3 = Color3.fromRGB(100, 100, 100),
+        BackgroundColor3 = Color3.fromRGB(33, 33, 39),
         BackgroundTransparency = 1,
         BorderColor3 = Color3.fromRGB(0, 0, 0),
         BorderSizePixel = 0,
@@ -59,7 +59,7 @@ function loaderLibrary:createLoader()
 
     local stroke = self.new("UIStroke", {
         ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
-        Color = Color3.fromRGB(120, 120, 120),
+        Color = Color3.fromRGB(85, 123, 198),
         Transparency = 1,
         Name = "Stroke",
         Parent = background
@@ -75,7 +75,7 @@ function loaderLibrary:createLoader()
         Size = UDim2.new(1, 47, 1, 47),
         ZIndex = -1,
         Image = "rbxassetid://6014261993",
-        ImageColor3 = Color3.fromRGB(56, 56, 56),
+        ImageColor3 = Color3.fromRGB(85, 123, 198),
         ImageTransparency = 1,
         ScaleType = Enum.ScaleType.Slice,
         SliceCenter = Rect.new(49, 49, 450, 450)
@@ -94,7 +94,7 @@ function loaderLibrary:createLoader()
         Size = UDim2.new(1, 0, 1, 0),
         FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.SemiBold),
         Text = "Soulware Loader",
-        TextColor3 = Color3.fromRGB(160, 160, 160),
+        TextColor3 = Color3.fromRGB(85, 123, 198),
         TextScaled = false,
         TextSize = 14.000,
         TextWrapped = true
@@ -110,7 +110,7 @@ function loaderLibrary:createLoader()
         local strokeTweenShow = tweenService:Create(stroke, info, {Transparency = 0})
         strokeTweenShow:Play()
 
-        local dropShadowTweenShow = tweenService:Create(dropShadow, info, {ImageTransparency = 0})
+        local dropShadowTweenShow = tweenService:Create(dropShadow, info, {ImageTransparency = 0.6})
         dropShadowTweenShow:Play()
 
         local cornerTweenIn = tweenService:Create(corner, info, {CornerRadius = UDim.new(0, 15)})
