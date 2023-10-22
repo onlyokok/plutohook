@@ -154,7 +154,7 @@ task.wait(math.random(1, 5))
 loader:unload()
 
 local Window = Library:CreateWindow({
-    Title = 'SoulHub',
+    Title = 'Soulware',
     Center = true,
     AutoShow = true,
     TabPadding = 8,
